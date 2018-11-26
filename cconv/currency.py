@@ -1,5 +1,4 @@
 from datetime import datetime
-from decimal import Decimal
 
 
 class Money:
@@ -7,7 +6,7 @@ class Money:
     Synopsis
     ========
     Represents the money value object, with currency and current amount expressed
-    as a decimal class to support precise float arithmetics.
+    as a float object (assuming loss of precision is acceptable in favor of speed).
 
     Examples
     ========
@@ -18,31 +17,42 @@ class Money:
 
     def __init__(self, currency, amount=0):
         self.currency = str(currency).upper()
-        self.amount = Decimal(amount)
+        self.amount = float(amount)
 
     def __repr__(self):
-        return f"Money('{self.currency}', {float(self.amount)})"
+        return f"{self.__class__.__name__}('{self.currency}', {self.amount})"
+
+    def __iter__(self):
+        return (attr for attr in (self.currency, self.amount))
 
 
-class EurRate:
+class EurRates:
     """
     Synopsis
     ========
-    Represents the exchange rate value object related to the EUR currency.
+    Represents the exchange rates of various currencies as EUR one by the specified
+    reference date.
+    The data is represented as a dict object with currency ISO as the key and a the
+    exchange rate float as a value.
 
     Examples
     ========
-    >>> rate = EurRate('USD', 1.1352, '2018-11-23')
-    >>> print(rate)
-    EurRate('USD', 1.1352, '2018-11-23')
+    >>> rates = EurRates('2018-11-23')
+    >>> print(rates)
+    EurRates('2018-11-23', {})
     """
 
     FORMAT = '%Y-%m-%d'
 
-    def __init__(self, currency, rate, ref_date):
-        self.currency = str(currency).upper()
-        self.rate = float(rate)
+    def __init__(self, ref_date, data={}):
         self.ref_date = datetime.strptime(ref_date, self.FORMAT).date()
+        self.data = self._normalize(data)
 
     def __repr__(self):
-        return f"EurRate('{self.currency}', {self.rate}, '{self.ref_date}')"
+        return f"{self.__class__.__name__}('{self.ref_date}', {self.data})"
+
+    def __getitem__(self, key):
+        return self.data[key]
+
+    def _normalize(self, data):
+        return {str(k).upper(): float(v) for k, v in data.items()}
