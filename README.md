@@ -81,14 +81,15 @@ gunicorn -w 4 -k meinheld.gmeinheld.MeinheldWorker -b :8888 app:convert
 ```
 
 ### Examples
-Convert 99.99 EUR to USD by 29 of August rate:
+
+#### EUR to USD
 http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=USD&reference_date=2018-08-29
 ```json
 {"amount": 116.59, "currency": "USD"}
 ```
 
-Convert 9.99 USD to PLN (last available rate):
-http://127.0.0.1:8888/convert?amount=9.99&src_currency=USD&dest_currency=PLN
+#### USD to PLN
+http://127.0.0.1:8888/convert?amount=9.99&src_currency=USD&dest_currency=PLN&fresh=True
 ```json
 {"amount": 37.73, "currency": "PLN"}
 ```
