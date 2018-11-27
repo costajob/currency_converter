@@ -7,16 +7,29 @@ class Computer:
 
     Examples
     ========
-    >>> comp = Computer(('USD', 10.0), 'CHF')
-    >>> comp({'USD': 1.1352, 'CHF': 1.1316})
+    >>> comp = Computer(('USD', 10.0), 'CHF', {'USD': 1.1352, 'CHF': 1.1316})
+    >>> comp()
     {'amount': 9.97, 'currency': 'CHF'}
     """
 
-    def __init__(self, money, dest='EUR'):
+    DEFAULT_CURRENCY = 'EUR'
+
+    def __init__(self, money, dest, rates):
         self.src, self.amount =  money
+        self.rates = rates
         self.dest = str(dest).upper()
 
-    def __call__(self, rates):
-        ratio = rates[self.dest] / rates[self.src]
-        conversion = ratio * self.amount
+    @property
+    def ratio(self):
+        if self.src == self.dest:
+            return 1
+        elif self.src == self.DEFAULT_CURRENCY:
+            return 1 / self.rates[self.dest]
+        elif self.dest == self.DEFAULT_CURRENCY:
+            return self.rates[self.src]
+        else:
+            return self.rates[self.src] / self.rates[self.dest]
+
+    def __call__(self):
+        conversion = self.amount / self.ratio
         return {'amount': float(f'{conversion:.2f}'), 'currency': self.dest}

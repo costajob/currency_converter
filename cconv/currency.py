@@ -32,33 +32,25 @@ class EurRates:
     ========
     Represents the exchange rates of various currencies as EUR one by the specified
     reference date.
-    The data is represented as a dict object with currency ISO as the key and a the
-    exchange rate float as a value.
 
     Examples
     ========
-    >>> rates = EurRates('2018-11-23')
+    >>> rates = EurRates('2018-11-23', {'usd': '1.1363', 'ZAR': '15.7322'})
     >>> print(rates)
-    EurRates('2018-11-23', {})
+    EurRates('2018-11-23', {'USD': 1.1363, 'ZAR': 15.7322})
     """
 
     FORMAT = '%Y-%m-%d'
 
-    @classmethod
-    def bulk(cls, data):
-        """
-        Creates a list of EurRates objects by a nested dict structure:
-        """
-
-    def __init__(self, ref_date, data={}):
+    def __init__(self, ref_date, nodes={}):
         self.ref_date = datetime.strptime(ref_date, self.FORMAT).date()
-        self.data = self._normalize(data)
+        self.nodes = self._normalize(nodes)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}('{self.ref_date}', {self.data})"
+        return f"{self.__class__.__name__}('{self.ref_date}', {self.nodes})"
 
     def __getitem__(self, key):
-        return self.data[key]
+        return self.nodes[key]
 
-    def _normalize(self, data):
-        return {str(k).upper(): float(v) for k, v in data.items()}
+    def _normalize(self, nodes):
+        return {str(k).upper(): float(v) for k, v in nodes.items()}
