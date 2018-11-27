@@ -87,7 +87,7 @@ gunicorn -w 4 -k meinheld.gmeinheld.MeinheldWorker -b :8888 app:convert
 ## Examples
 
 ### EUR to USD
-http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=USD&reference_date=2018-08-29
+http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=USD
 ```json
 {"amount": 116.59, "currency": "USD"}
 ```
