@@ -52,5 +52,8 @@ class EurRates:
     def __getitem__(self, key):
         return self.nodes[key]
 
+    def keys(self):
+        return self.nodes.keys()
+
     def _normalize(self, nodes):
         return {str(k).upper(): float(v) for k, v in nodes.items()}

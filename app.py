@@ -14,8 +14,8 @@ def convert(environ, start_response):
         money = currency.Money(src, amt)
         comp = converter.Computer(money, dest, rates)
         res = dumps(comp()).encode()
-    except (ValueError, KeyError) as e:
-        res = f'{e.__class__.__name__}: {e}'.encode()
+    except KeyError as e:
+        res = str(e).encode()
     response_headers = [('Content-type', 'text/json'), ('Content-Length', str(len(res)))]
     start_response('200 OK', response_headers)
     return [res]
@@ -26,7 +26,7 @@ def _query(environ):
     amt = query.get('amount', ['9.99'])[0]
     src = query.get('src_currency', ['EUR'])[0]
     dest = query.get('dest_currency', ['USD'])[0]
-    ref = query.get('reference_date', ['2018-11-26'])[0]
+    ref = query.get('reference_date', [''])[0]
     fresh = query.get('fresh', [''])[0]
     return [escape(q) for q in (amt, src, dest, ref, fresh)]
 
@@ -34,5 +34,10 @@ def _query(environ):
 def _rates(fresh, ref):
     tree = data.Fetcher(fresh=bool(fresh))()
     parser = data.Parser(tree)
-    nodes = parser()[ref]
-    return currency.EurRates(ref, nodes)
+    nodes = parser()
+    dates = list(nodes.keys())
+    ref = ref or dates[0]
+    try:
+        return currency.EurRates(ref, nodes[ref])
+    except KeyError:
+        raise KeyError(f'unavailable reference date, use one of these: {", ".join(dates)}')

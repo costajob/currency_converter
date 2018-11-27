@@ -12,7 +12,7 @@ class Computer:
     {'amount': 9.97, 'currency': 'CHF'}
     """
 
-    DEFAULT_CURRENCY = 'EUR'
+    DEFAULT = 'EUR'
 
     def __init__(self, money, dest, rates):
         self.src, self.amount =  money
@@ -21,14 +21,17 @@ class Computer:
 
     @property
     def ratio(self):
-        if self.src == self.dest:
-            return 1
-        elif self.src == self.DEFAULT_CURRENCY:
-            return 1 / self.rates[self.dest]
-        elif self.dest == self.DEFAULT_CURRENCY:
-            return self.rates[self.src]
-        else:
-            return self.rates[self.src] / self.rates[self.dest]
+        try:
+            if self.src == self.dest:
+                return 1
+            elif self.src == self.DEFAULT:
+                return 1 / self.rates[self.dest]
+            elif self.dest == self.DEFAULT:
+                return self.rates[self.src]
+            else:
+                return self.rates[self.src] / self.rates[self.dest]
+        except KeyError:
+            raise KeyError(f'unavailable currency, use one of these: {self.DEFAULT}, {", ".join(self.rates.keys())}')
 
     def __call__(self):
         conversion = self.amount / self.ratio
