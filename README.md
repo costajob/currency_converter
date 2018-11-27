@@ -4,6 +4,7 @@
   * [Version](#version)
   * [Footprint](#footprint)
 * [Design](#design)
+  * [Rounding](#rounding)
   * [Tests](#tests)
 * [Usage](#usage)
   * [Installation](#installation)
@@ -26,13 +27,18 @@ This is the implementation of the python code kata `currency converter` (for fur
 The library is compatible and it has been tested with python versions `3.6.4` and `3.7.1`, since it uses the pretty useful [string literal](https://www.python.org/dev/peps/pep-0498/) interpolation introduced by version `3.6` on.
 
 ## Footprint
-There is a minimal external dependencies footprint, but for `gunicorn` and `meinheld`, which are used to speed up HTTP server.
+To grant resiliency and courtesy of the python bread standard library, the external dependencies footprint is kept to a minimum.  
+The only external modules are `gunicorn` and `meinheld`, which are used to increase HTTP server throughput.
 
 # Design
-The code design follows the single responsibility principle by using a dedicated class for any specific task, confined within meaningful modules:
+The code design follows the single responsibility principle by using a dedicated class for any specific task, each confined within meaningful modules:
 * `currency`: currency related objects, such as `Money` and `EurRates`
 * `data`: data related objects, such as `Fetcher` and `Parser`
-* `converter`: the ``Computer` object contains the conversion core logic
+* `converter`: the conversion core logic within the `Computer` object
+
+## Rounding
+The library is relaxed on float arithmetics by rounding final conversion results to *two decimals*.  
+This allows to speed up execution by avoiding relying on a `Decimal` objects and is also acceptable considering the objectives.
 
 ## Tests
 The library is covered, by fast, isolated unit and docs testing (to grant reliable documentation):
@@ -48,7 +54,7 @@ OK
 # Usage
 
 ## Installation
-Install the dependencies via `pip`:
+Install the external dependencies via `pip`:
 ```shell
 pip install -r requirements.txt
 ```
@@ -63,11 +69,11 @@ The query parameters described by the objectives have the following defaults:
 * dest_currency: USD
 * reference_date: the most recent specified on fetched exchange rates document
 
-There is an additional parameter to force fetching a fresh copy of the exchange rates XML form remote source:
+There is an additional parameter to force fetching a fresh copy of the exchange rates XML form remote source (otherwise the `cconv/data/rates.xml` cached document is loaded):
 * fresh: False
 
 ## Start Server
-To start the server use the `gunicorn` executable by spawning as many workers as you need:
+To start the server use the `gunicorn` executable by spawning as many workers as you need and by specifying the HTTP port:
 ```shell
 gunicorn -w 4 -k meinheld.gmeinheld.MeinheldWorker -b :8888 app:convert
 ```
