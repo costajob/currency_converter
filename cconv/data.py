@@ -9,9 +9,8 @@ class Fetcher:
     """
     Synopsis
     ========
-    Parse the specified XML source locally if present. If it does not exist or 
-    if the 'fresh' flag is True, tries to fetch it remotely from the 
-    specified URL. 
+    Parse the specified XML source locally if present. If it does not exist tries 
+    to fetch it remotely from the specified URL. 
     Returns a raw ElementTree object for further parsing.
 
     Examples
@@ -24,14 +23,13 @@ class Fetcher:
     XML = 'cconv/data/rates.xml'
     URL = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml'
 
-    def __init__(self, doc=XML, url=URL, fresh=False):
+    def __init__(self, doc=XML, url=URL):
         self.doc = path.abspath(doc)
         self.url = urlparse(url).geturl()
-        self.fresh = fresh
 
     def __call__(self):
-        if not path.exists(self.doc) or self.fresh:
-            logger.info('fetching data remotely by %s', self.url)
+        if not path.exists(self.doc):
+            logger.info('fetching data remotely from %s', self.url)
             with urlopen(self.url) as remote, open(self.doc, 'wb') as local:
                 local.write(remote.read())
         with open(self.doc) as doc:

@@ -1,3 +1,5 @@
+from cconv.logger import BASE as logger
+
 class Computer:
     """
     Synopsis
@@ -30,7 +32,8 @@ class Computer:
                 return self.rates[self.src]
             else:
                 return self.rates[self.src] / self.rates[self.dest]
-        except KeyError:
+        except KeyError as e:
+            logger.error(e)
             raise KeyError(f'unavailable currency, use one of these: {self.DEFAULT}, {", ".join(self.rates.keys())}')
 
     def __call__(self):
