@@ -1,101 +1,93 @@
-# Objectives
+# Table of Contents
+* [Scope](#scope)
+* [Requirements](#requirements)
+  * [Version](#version)
+  * [Footprint](#footprint)
+* [Design](#design)
+  * [Tests](#tests)
+* [Usage](#usage)
+  * [Installation](#installation)
+  * [API](#api)
+    * [Parameters](#parameters)
+  * [Start Server](#start-server)
+  * [Examples](#examples)
+    * [EUR to USD](#eur-to-usd)
+    * [USD to PLN](#usd-to-pln)
+  * [Errors](#errors)
+    * [Wrong Date](#wrong-date)
+    * [Wrong Currency](#wrong-currency)
 
-## Back-end developer assignment:
-Implement an online currency converter, providing a Web API endpoint called convert.
+# Scope
+This is the implementation of the python code kata `currency converter` (for further details please check the `OBJECTIVES.md` file)
 
-The endpoint must accept HTTP GET requests.
+# Requirements
 
-You’re free to design the endpoint structure as you like, as long it accepts the following
-parameters:
-*  amount: the amount to convert (e.g. 12.35)
-* src_currency: ISO currency code for the source currency to convert (e.g. EUR,
-USD, GBP)
-* dest_currency: ISO currency code for the destination currency to convert (e.g. EUR,
-USD, GBP)
-* reference_date: reference date for the exchange rate, in YYYY-MM-DD format
-Your program must convert the provided amount from src_currency to dest_currency,
-given the exchange rate at the reference_date.
-
-The response should be a JSON object like this:
-```json
-{
-  "amount": 20.23,
-  "currency": "EUR"
-}
-```
-
-You can find an xml file with the last 90 days exchange rates at this [link](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml)
-
-## Constraints:
-* Node.js version >=7 or Python language, version >=3.4
-* Publish your project to an accessible git source code repository
-* Provide clear instructions on how to run your project through a README file
-
-## Notes:
-* You are free to use any framework you want
-
-## Bonus points
-* Containerization with Docker
-* Write automated tests for your project.
-* Dynamically retrieve the latest XML file at project startup time and somehow store it for the converter usage
-
-# Implementation
-
-## Python Version
-The library is compatible with python version `>= 3.6`, since it uses the f-string introduced by that version on.  
+## Version
+The library is compatible and it has been tested with python versions `3.6.4` and `3.7.1`, since it uses the pretty useful [string literal](https://www.python.org/dev/peps/pep-0498/) interpolation introduced by version `3.6` on.
 
 ## Footprint
 There is a minimal external dependencies footprint, but for `gunicorn` and `meinheld`, which are used to speed up HTTP server.
 
-## Design
-The code design follows the single responsibility principle by using a dedicated class for any specific task.
+# Design
+The code design follows the single responsibility principle by using a dedicated class for any specific task, confined within meaningful modules:
+* `currency`: currency related objects, such as `Money` and `EurRates`
+* `data`: data related objects, such as `Fetcher` and `Parser`
+* `converter`: the ``Computer` object contains the conversion core logic
+
+## Tests
+The library is covered, by fast, isolated unit and docs testing (to grant reliable documentation):
+```shell
+./run_test
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 0.007s
+
+OK
+```
+
+# Usage
 
 ## Installation
 Install the dependencies via `pip`:
-
 ```shell
 pip install -r requirements.txt
 ```
 
-## Usage
-
-### API
+## API
 The library exposes a single HTTP API at `0.0.0.0:8888/convert` (or at the port you bound at server start). 
 
 ### Parameters
-The query parameters described by the objectives have some defaults:
-* query = parse_qs(environ.get('QUERY_STRING')) or {}
+The query parameters described by the objectives have the following defaults:
 * amount: 9.99
 * src_currency: EUR
 * dest_currency: USD
 * reference_date: the most recent specified on fetched exchange rates document
 
-#### Refresh XML
-There is an additional parameter, `fresh`, that force to fetch a fresh copy of the exchange rates HTML form remote source:
+There is an additional parameter to force fetching a fresh copy of the exchange rates XML form remote source:
 * fresh: False
 
-### Start Server
+## Start Server
 To start the server use the `gunicorn` executable by spawning as many workers as you need:
 ```shell
 gunicorn -w 4 -k meinheld.gmeinheld.MeinheldWorker -b :8888 app:convert
 ```
 
-### Examples
+## Examples
 
-#### EUR to USD
+### EUR to USD
 http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=USD&reference_date=2018-08-29
 ```json
 {"amount": 116.59, "currency": "USD"}
 ```
 
-#### USD to PLN
+### USD to PLN
 http://127.0.0.1:8888/convert?amount=9.99&src_currency=USD&dest_currency=PLN&fresh=True
 ```json
 {"amount": 37.73, "currency": "PLN"}
 ```
 
 ## Errors
-Some basic errors management is done via exceptions.
+Some basic errors management is done via exceptions catching.
 
 ### Wrong Date
 http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=USD&reference_date=2018-11-31
@@ -107,15 +99,4 @@ http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=USD&re
 http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=XXX
 ```
 'unavailable currency, use one of these: EUR, USD, JPY, BGN, CZK, DKK, GBP, HUF, PLN, RON, SEK, CHF, ISK, NOK, HRK, RUB, TRY, AUD, BRL, CAD, CNY, HKD, IDR, ILS, INR, KRW, MXN, MYR, NZD, PHP, SGD, THB, ZAR'
-```
-
-## Tests
-The library is covered, by fast, isolated unit and docs testing (to grant reliable documentation):
-```shell
-./run_test
-..............
-----------------------------------------------------------------------
-Ran 14 tests in 0.007s
-
-OK
 ```
