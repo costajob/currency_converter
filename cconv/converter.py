@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 class Computer:
     """
     Synopsis

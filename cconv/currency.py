@@ -44,6 +44,12 @@ class EurRates:
 
     FORMAT = '%Y-%m-%d'
 
+    @classmethod
+    def bulk(cls, data):
+        """
+        Creates a list of EurRates objects by a nested dict structure:
+        """
+
     def __init__(self, ref_date, data={}):
         self.ref_date = datetime.strptime(ref_date, self.FORMAT).date()
         self.data = self._normalize(data)
