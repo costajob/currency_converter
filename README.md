@@ -38,7 +38,7 @@ The code design follows the single responsibility principle by using a dedicated
 
 ## Rounding
 The library is relaxed on float arithmetics by rounding final conversion results to *two decimals*.  
-This allows to speed up execution by avoiding relying on a `Decimal` objects and is also acceptable considering the objectives.
+This allows to speed up execution by avoiding instantiating `Decimal` objects and is acceptable considering the objectives (granularity of currencies).
 
 ## Tests
 The library is covered, by fast, isolated unit and docs testing (to grant reliable documentation):
