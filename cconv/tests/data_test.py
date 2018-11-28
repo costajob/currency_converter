@@ -1,9 +1,14 @@
 import unittest
+from xml.etree import ElementTree
 from cconv import data
 
 
 class TestData(unittest.TestCase):
-    def test_document(self):
+    def test_fetcher_local(self):
+        tree = data.Fetcher('cconv/tests/stubs.xml')()
+        self.assertIsInstance(tree, ElementTree.ElementTree)
+
+    def test_parser(self):
         tree = data.Fetcher('cconv/tests/stubs.xml')()
         parser = data.Parser(tree)
         nodes = parser()
