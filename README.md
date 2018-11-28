@@ -19,10 +19,10 @@
   * [Errors](#errors)
     * [Wrong Date](#wrong-date)
     * [Wrong Currency](#wrong-currency)
+* [Throughput](#throughput)
 
 # Scope
-This is the implementation of the python code kata `currency converter`.  
-For further instructions please check the `OBJECTIVES.md` file.
+This is the implementation of the python code kata `currency converter`. For further instructions please check the `OBJECTIVES.md` file.
 
 # Requirements
 
@@ -30,24 +30,21 @@ For further instructions please check the `OBJECTIVES.md` file.
 The library is compatible and it has been tested with python versions `3.6.4` and `3.7.1`, since it uses the pretty useful [string literal](https://www.python.org/dev/peps/pep-0498/) interpolation introduced from version `3.6` on.
 
 ## Footprint
-To grant resiliency (and courtesy of the Python's broad standard library) the external dependencies footprint is kept to a minimum.  
-The only external modules are `gunicorn` and `meinheld`, which are used to increase HTTP server throughput.
+To grant resiliency (and courtesy of the Python's broad standard library) the external dependencies footprint is kept to a minimum, but for `gunicorn` and `meinheld` modules, which are used to wrap the WSGI HTTP server in order to augment throughput.
 
 # Design
 
 ## SRP
-The code design follows the single responsibility principle by using a dedicated class for any specific task. Each class confined within meaningful modules:
+The code design follows the single responsibility principle by using a dedicated class for any specific task. Each class is confined within meaningful modules:
 * `currency`: currency related objects, such as `Money` and `EurRates`
 * `data`: data related objects, such as `Fetcher` and `Parser`
 * `converter`: the conversion core logic within the `Computer` object
 
 ## Rounding
-The library is relaxed on float arithmetics by rounding final conversion results to *two decimals*.  
-This allows to speed up execution by avoiding instantiating `Decimal` objects and is acceptable considering the objectives (granularity of currencies).
+The library is relaxed on float arithmetics by rounding final conversion results to *two decimals*. This allows to speed up execution by avoiding instantiating `Decimal` objects and can be acceptable considering the objectives (granularity of currencies).
 
 ## Data
-The EUR exchange rates are fetched by a remote [XML document](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml).  
-The document is fetched one time only at server start and cached at `./cconv/data/rates.xml` to avoid network latency. Just delete it to fetch a fresh copy.
+The EUR exchange rates are fetched by a remote [XML document](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml). The document is fetched one time only at server start and cached at `./cconv/data/rates.xml` to avoid network latency. Just delete it to fetch a fresh copy.
 
 ## Tests
 The library is covered, by fast, isolated unit and doc testing (the latter to grant reliable documentation):
@@ -72,11 +69,11 @@ pip install -r requirements.txt
 The library exposes a single HTTP API at `0.0.0.0:8888/convert` (or at the port you bound at server start). 
 
 ### Parameters
-The query parameters described by the objectives have the following defaults:
+The query parameters described by the objectives have the following defaults to let the API work also without specifying them:
 * amount: 9.99
 * src_currency: EUR
 * dest_currency: USD
-* reference_date: the most recent specified on the XML document
+* reference_date: the most recent date specified on the XML document
 
 ## Start Server
 To start the server use the `gunicorn` executable by spawning as many workers as you need and by specifying the HTTP port:
@@ -111,4 +108,18 @@ http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=USD&re
 http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=XXX
 ```
 'unavailable currency, use one of these: EUR, USD, JPY, BGN, CZK, DKK, GBP, HUF, PLN, RON, SEK, CHF, ISK, NOK, HRK, RUB, TRY, AUD, BRL, CAD, CNY, HKD, IDR, ILS, INR, KRW, MXN, MYR, NZD, PHP, SGD, THB, ZAR'
+```
+
+# Throughput
+Courtesy of the `gunicorn` and `meinheld` it is possible to squeeze decent throughput by stressing the server via the `wrk` tool:
+```shell
+wrk -t 4 -c 100 -d30s --timeout 2000 http://127.0.0.1:8888/convert
+Running 30s test @ http://127.0.0.1:8888/convert
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   140.82ms   27.93ms 345.89ms   93.24%
+    Req/Sec   178.01     21.77   240.00     67.22%
+  21335 requests in 30.09s, 3.76MB read
+Requests/sec:    708.99
+Transfer/sec:    128.09KB
 ```
