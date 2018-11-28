@@ -10,6 +10,7 @@
   * [Tests](#tests)
 * [Usage](#usage)
   * [Installation](#installation)
+    * [Docker](#docker)
   * [API](#api)
     * [Parameters](#parameters)
   * [Start Server](#start-server)
@@ -63,6 +64,17 @@ OK
 Install the external dependencies via `pip`:
 ```shell
 pip install -r requirements.txt
+```
+
+### Docker
+This application can be built and deployed as a [Docker](https://www.docker.com/) container by relying on the `python:3.7.1` official image:
+```shell
+docker build -t currency_converter .
+```
+
+Once the container has been built, just run it by:
+```shell
+docker run -d -p 8888:8888 currency_converter
 ```
 
 ## API
