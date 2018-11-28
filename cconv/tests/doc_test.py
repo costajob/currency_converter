@@ -1,7 +1,9 @@
 import doctest 
+from pkgutil import iter_modules
 
 
 def load_tests(loader, tests, ignore):
-    for mod in ('converter', 'currency', 'data'):
+    modules = [name for _, name, _ in iter_modules(['cconv']) if name != 'tests']
+    for mod in modules:
         tests.addTests(doctest.DocTestSuite(mod))
     return tests
