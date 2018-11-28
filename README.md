@@ -20,7 +20,7 @@
   * [Errors](#errors)
     * [Wrong Date](#wrong-date)
     * [Wrong Currency](#wrong-currency)
-* [Throughput](#throughput)
+* [Performance](#performance)
 
 # Scope
 This is the implementation of the python code kata `currency converter`. For further instructions please check the `OBJECTIVES.md` file.
@@ -122,7 +122,7 @@ http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=XXX
 'unavailable currency, use one of these: EUR, USD, JPY, BGN, CZK, DKK, GBP, HUF, PLN, RON, SEK, CHF, ISK, NOK, HRK, RUB, TRY, AUD, BRL, CAD, CNY, HKD, IDR, ILS, INR, KRW, MXN, MYR, NZD, PHP, SGD, THB, ZAR'
 ```
 
-# Throughput
+# Performance
 Courtesy of the `gunicorn` and `meinheld` it is possible to squeeze decent throughput by stressing the server via the `wrk` tool:
 ```shell
 wrk -t 4 -c 100 -d30s --timeout 2000 http://127.0.0.1:8888/convert
