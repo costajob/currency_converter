@@ -49,7 +49,7 @@ The EUR exchange rates are fetched by a remote [XML document](https://www.ecb.eu
 ## Tests
 The library is covered, by fast, isolated unit and doc testing (the latter to grant reliable documentation):
 ```shell
-./run_test
+python -m unittest discover -s cconv -p '*.py'
 ..............
 ----------------------------------------------------------------------
 Ran 14 tests in 0.007s
