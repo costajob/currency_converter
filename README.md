@@ -47,11 +47,10 @@ The library is relaxed on float arithmetics precision by rounding final conversi
 
 ## Data
 The EUR exchange rates are fetched by a remote [XML document](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml). The document is fetched one time only at server start and cached at `./cconv/data/rates.xml` to avoid network latency.  
-Just delete the cached XML to fetch a fresh copy (remember to reset in-memory cache too, read below).
+Just delete the cached XML and restart ``gunicorn` to fetch a fresh copy.
 
 ### Cache
-A plain, in-memory caching mechanism is adopted to avoid traversing the XML document at each request: it will store a maximum of 1000 `EurRates` objects.  
-The cache is activated at server start, to reset it you have to restart `gunicorn`.
+A plain, in-memory caching mechanism is adopted to avoid instantiating a brand new `EurRates` object at each request: it will store a maximum of 1000 objects.  
 
 ## Tests
 The library is covered, by fast, isolated unit and doc testing (the latter to grant reliable documentation):
@@ -135,9 +134,9 @@ wrk -t 4 -c 100 -d30s --timeout 2000 http://127.0.0.1:8888/convert
 Running 30s test @ http://127.0.0.1:8888/convert
   4 threads and 100 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     2.08ms    1.75ms  18.88ms   44.03%
-    Req/Sec    12.28k     4.60k   19.49k    50.25%
-  1470830 requests in 30.10s, 259.50MB read
-Requests/sec:  48862.13
-Transfer/sec:      8.62MB
+    Latency     2.02ms  579.12us  21.70ms   81.65%
+    Req/Sec    12.48k   440.38    13.49k    72.17%
+  1489499 requests in 30.00s, 262.79MB read
+Requests/sec:  49647.49
+Transfer/sec:      8.76MB
 ```

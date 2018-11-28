@@ -5,7 +5,11 @@ from cconv import data, currency, converter
 from cconv.logger import BASE as logger
 
 
+# Declare CPU/RAM intensive objects at start
 CACHE = data.Cache()
+TREE = data.Fetcher()()
+NODES = data.Parser(TREE)()
+DATES = list(NODES.keys())
 
 
 def convert(environ, start_response):
@@ -36,13 +40,9 @@ def _query(environ):
 
 
 def _rates(ref):
-    tree = data.Fetcher()()
-    parser = data.Parser(tree)
-    nodes = parser()
-    dates = list(nodes.keys())
-    ref = ref or dates[0]
     try:
-        return currency.EurRates(ref, nodes[ref])
+        ref = ref or DATES[0]
+        return currency.EurRates(ref, NODES[ref])
     except KeyError as e:
         logger.error(e)
-        raise KeyError(f'unavailable reference date, use one of these: {", ".join(dates)}')
+        raise KeyError(f'unavailable reference date, use one of these: {", ".join(DATES)}')
