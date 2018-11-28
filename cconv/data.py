@@ -77,3 +77,47 @@ class Parser:
 
     def _is_rate(self, node):
         return self.CURRENCY in node and self.RATE in node
+
+
+class Cache:
+    """
+    Synopsis
+    ========
+    A pretty simple chaching class with a maximum capacity, used by WSGI server to 
+    avoid parsing the XML tree at each request.
+    Accepts a callback on fetching element
+
+    Examples
+    ========
+    >>> callback = lambda ref: {ref: {'USD': '1.1363', 'ZAR': '15.7322'}}
+    >>> cache = Cache()
+    >>> cache.fetch('2018-10-29', callback)
+    {'2018-10-29': {'USD': '1.1363', 'ZAR': '15.7322'}}
+    """
+
+    def __init__(self, capacity=1000):
+        self.capacity = int(capacity)
+        self.store = {}
+
+    def __len__(self):
+        return len(self.store)
+
+    def __contains__(self, key):
+        return key in self.store
+
+    def __getitem__(self, key):
+        return self.store[key]
+    
+    def fetch(self, key, callback):
+        if key in self.store:
+            return self.store[key]
+        self._overflow()
+        obj = callback(key)
+        self.store[key] = obj
+        return obj
+
+    def _overflow(self):
+        if len(self) == self.capacity:
+            for key in self.store:
+                self.store.pop(key)
+                break

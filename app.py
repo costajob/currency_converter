@@ -5,13 +5,16 @@ from cconv import data, currency, converter
 from cconv.logger import BASE as logger
 
 
+CACHE = data.Cache()
+
+
 def convert(environ, start_response):
     if environ['PATH_INFO'] != '/convert':
         start_response('404 Not Found', [])
         return []
     amt, src, dest, ref = _query(environ)
     try:
-        rates = _rates(ref)
+        rates = CACHE.fetch(ref, _rates)
         money = currency.Money(src, amt)
         comp = converter.Computer(money, dest, rates)
         res = dumps(comp()).encode()

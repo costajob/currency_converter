@@ -38,7 +38,7 @@ To grant resiliency (and courtesy of the Python's broad standard library) the ex
 ## SRP
 The code design follows the single responsibility principle by using a dedicated class for any specific task. Each class is confined within meaningful modules:
 * `currency`: currency related objects, such as `Money` and `EurRates`
-* `data`: data related objects, such as `Fetcher` and `Parser`
+* `data`: data related objects, such as `Fetcher`, `Parser` and `Cache`
 * `converter`: the conversion core logic within the `Computer` object
 
 ## Precision
@@ -46,14 +46,15 @@ The library is relaxed on float arithmetics precision by rounding final conversi
 
 ## Data
 The EUR exchange rates are fetched by a remote [XML document](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml). The document is fetched one time only at server start and cached at `./cconv/data/rates.xml` to avoid network latency. Just delete it to fetch a fresh copy.
+A plain, internal caching mechanism is used to avoid parsing the document at each request (it will store a maximum of 1000 rates objects).
 
 ## Tests
 The library is covered, by fast, isolated unit and doc testing (the latter to grant reliable documentation):
 ```shell
 python -m unittest discover -s cconv -p '*.py'
-...............
+..................
 ----------------------------------------------------------------------
-Ran 15 tests in 0.006s
+Ran 18 tests in 0.008s
 
 OK
 ```
@@ -129,9 +130,9 @@ wrk -t 4 -c 100 -d30s --timeout 2000 http://127.0.0.1:8888/convert
 Running 30s test @ http://127.0.0.1:8888/convert
   4 threads and 100 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   140.82ms   27.93ms 345.89ms   93.24%
-    Req/Sec   178.01     21.77   240.00     67.22%
-  21335 requests in 30.09s, 3.76MB read
-Requests/sec:    708.99
-Transfer/sec:    128.09KB
+    Latency     2.08ms    1.75ms  18.88ms   44.03%
+    Req/Sec    12.28k     4.60k   19.49k    50.25%
+  1470830 requests in 30.10s, 259.50MB read
+Requests/sec:  48862.13
+Transfer/sec:      8.62MB
 ```
