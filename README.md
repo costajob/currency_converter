@@ -5,7 +5,7 @@
   * [Footprint](#footprint)
 * [Design](#design)
   * [SRP](#srp)
-  * [Rounding](#rounding)
+  * [Precision](#precision)
   * [Data](#data)
   * [Tests](#tests)
 * [Usage](#usage)
@@ -41,8 +41,8 @@ The code design follows the single responsibility principle by using a dedicated
 * `data`: data related objects, such as `Fetcher` and `Parser`
 * `converter`: the conversion core logic within the `Computer` object
 
-## Rounding
-The library is relaxed on float arithmetics by rounding final conversion results to *two decimals*. This allows to speed up execution by avoiding instantiating `Decimal` objects and can be acceptable considering the objectives (granularity of currencies).
+## Precision
+The library is relaxed on float arithmetics precision by rounding final conversion results by *two decimals*. This allows to speed up execution by avoiding instantiating `Decimal` objects and can be acceptable considering the objectives (granularity of currencies).
 
 ## Data
 The EUR exchange rates are fetched by a remote [XML document](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml). The document is fetched one time only at server start and cached at `./cconv/data/rates.xml` to avoid network latency. Just delete it to fetch a fresh copy.
