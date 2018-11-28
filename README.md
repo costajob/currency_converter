@@ -31,7 +31,7 @@ This is the implementation of the python code kata `currency converter`. For fur
 The library is compatible and it has been tested with python versions `3.6.4` and `3.7.1`, since it uses the pretty useful [string literal](https://www.python.org/dev/peps/pep-0498/) interpolation introduced from version `3.6` on.
 
 ## Footprint
-To grant resiliency (and courtesy of the Python's broad standard library) the external dependencies footprint is kept to a minimum, but for `gunicorn` and `meinheld` modules, which are used to wrap the WSGI HTTP server in order to augment throughput.
+To grant resiliency (and courtesy of the Python's broad standard library) the external dependencies footprint is kept to a minimum, but for `gunicorn` and `meinheld` libraries, which are used to wrap the WSGI HTTP server in order to augment [throughput](#performance).
 
 # Design
 
