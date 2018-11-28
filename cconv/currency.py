@@ -42,6 +42,8 @@ class EurRates:
 
     FORMAT = '%Y-%m-%d'
 
+    __slots__ = ['ref_date', 'nodes']
+
     def __init__(self, ref_date, nodes={}):
         self.ref_date = datetime.strptime(ref_date, self.FORMAT).date()
         self.nodes = self._normalize(nodes)
