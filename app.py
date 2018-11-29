@@ -23,6 +23,7 @@ class Converter:
     TREE = data.Fetcher()()
     NODES = data.Parser(TREE)()
     DATES = list(NODES.keys())
+    DEFAULTS = (['9.99'], ['EUR'], ['USD'], [''])
 
     def __init__(self, env, res):
         self.env = env
@@ -55,10 +56,10 @@ class Converter:
 
     def _params(self):
         params = parse_qs(self.env.get('QUERY_STRING')) or {}
-        amt = params.get('amount', ['9.99'])[0]
-        src = params.get('src_currency', ['EUR'])[0]
-        dest = params.get('dest_currency', ['USD'])[0]
-        ref = params.get('reference_date', [''])[0]
+        amt = params.get('amount', self.DEFAULTS[0])[0]
+        src = params.get('src_currency', self.DEFAULTS[1])[0]
+        dest = params.get('dest_currency', self.DEFAULTS[2])[0]
+        ref = params.get('reference_date', self.DEFAULTS[3])[0]
         return (escape(q) for q in (amt, src, dest, ref))
 
     def _rates(self, ref):
