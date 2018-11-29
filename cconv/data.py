@@ -84,12 +84,11 @@ class Cache:
     Synopsis
     ========
     A pretty simple chaching class with a maximum capacity, used by WSGI server to 
-    avoid parsing the XML tree at each request.
-    Accepts a callback on fetching element
+    avoid parsing the XML tree at each request. Accepts a callback on fetching element
 
     Examples
     ========
-    >>> callback = lambda ref: {ref: {'USD': '1.1363', 'ZAR': '15.7322'}}
+    >>> callback = lambda key: {key: {'USD': '1.1363', 'ZAR': '15.7322'}}
     >>> cache = Cache()
     >>> cache.fetch('2018-10-29', callback)
     {'2018-10-29': {'USD': '1.1363', 'ZAR': '15.7322'}}

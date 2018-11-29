@@ -21,8 +21,8 @@ class TestData(unittest.TestCase):
 
     def test_cache(self):
         col = []
-        callback_1 = lambda ref: {ref: {'USD': '1.1363', 'ZAR': '15.7322'}}
-        callback_2 = lambda ref: col.append(ref)
+        callback_1 = lambda key: {key: {'USD': '1.1363', 'ZAR': '15.7322'}}
+        callback_2 = lambda key: col.append(key)
         cache = data.Cache()
         cache.fetch('2018-10-29', callback_1)
         cache.fetch('2018-10-29', callback_2)
@@ -31,12 +31,12 @@ class TestData(unittest.TestCase):
         self.assertFalse(col)
 
     def test_cache_overflow(self):
-        callback = lambda ref: {ref: {'USD': '1.1363', 'ZAR': '15.7322'}}
+        callback = lambda key: {key: {'USD': '1.1363', 'ZAR': '15.7322'}}
         cache = data.Cache(1)
-        cache.fetch('2018-10-29', callback)
-        cache.fetch('2018-11-27', callback)
-        self.assertNotIn('2018-10-29', cache)
-        self.assertIn('2018-11-27', cache)
+        cache.fetch('key_1', callback)
+        cache.fetch('key_2', callback)
+        self.assertNotIn('key_1', cache)
+        self.assertIn('key_2', cache)
         self.assertEqual(len(cache), 1)
 
 

@@ -1,7 +1,7 @@
 # Objectives
 
 ## Back-end developer assignment:
-Implement an online currency converter, providing a Web API endpoint called convert.
+Implement an online currency converter, providing a Web API endpoint called `/convert`.
 
 The endpoint must accept HTTP GET requests.
 

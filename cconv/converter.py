@@ -16,7 +16,7 @@ class Computer:
 
     class CurrencyError(KeyError):
         """
-        This error is raised when an invalid currency is used on rates conversion.
+        This error is raised for invalid currency ISO code.
         """
 
     DEFAULT = 'EUR'
@@ -39,7 +39,7 @@ class Computer:
                 return self.rates[self.src] / self.rates[self.dest]
         except KeyError as e:
             logger.error(e)
-            raise self.CurrencyError(f'unavailable currency, use one of these: {self.DEFAULT}, {", ".join(self.rates.keys())}')
+            raise self.CurrencyError(f'invalid currency, use one of these: {self.DEFAULT}, {", ".join(self.rates.keys())}')
 
     def __call__(self):
         conversion = self.amount / self.ratio
