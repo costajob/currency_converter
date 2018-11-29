@@ -46,8 +46,7 @@ The code design follows the single responsibility principle by using a dedicated
 The library is relaxed on float arithmetics precision by rounding final conversion results by *two decimals*. This allows to speed up execution by avoiding instantiating `Decimal` objects and can be acceptable considering the objectives (granularity of currencies).
 
 ## Data
-The EUR exchange rates are fetched by a remote [XML document](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml). The document is fetched one time only at server start and cached at `./cconv/data/rates.xml` to avoid network latency.  
-Just delete the cached XML and restart ``gunicorn` to fetch a fresh copy.
+The EUR exchange rates are fetched by a remote [XML document](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml). The document is fetched once at server start and cached at `./cconv/data/rates.xml` to avoid further network latency. Just delete the cached XML and restart `gunicorn` to fetch a fresh copy.
 
 ### Cache
 A plain, in-memory caching mechanism is adopted to avoid instantiating a brand new `EurRates` object at each request: it will store a maximum of 1000 objects.  
@@ -86,7 +85,7 @@ docker run -d -p 8888:8888 currency_converter
 The library exposes a single HTTP API at `0.0.0.0:8888/convert` (or at the port you bound at server start). 
 
 ### Parameters
-The query parameters described by the objectives have the following defaults to let the API work also without specifying them:
+The query parameters described by the objectives have the following defaults to let the API works anyway:
 * amount: 9.99
 * src_currency: EUR
 * dest_currency: USD
