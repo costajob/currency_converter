@@ -57,7 +57,7 @@ The library is covered, by fast, isolated unit and doc testing (the latter to gr
 python -m unittest discover -s cconv -p '*.py'
 ..................
 ----------------------------------------------------------------------
-Ran 18 tests in 0.008s
+Ran 19 tests in 0.008s
 
 OK
 ```
@@ -133,9 +133,9 @@ wrk -t 4 -c 100 -d30s --timeout 2000 http://127.0.0.1:8888/convert
 Running 30s test @ http://127.0.0.1:8888/convert
   4 threads and 100 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     2.02ms  579.12us  21.70ms   81.65%
-    Req/Sec    12.48k   440.38    13.49k    72.17%
-  1489499 requests in 30.00s, 262.79MB read
-Requests/sec:  49647.49
-Transfer/sec:      8.76MB
+    Latency     2.01ms  614.97us   8.11ms   75.41%
+    Req/Sec    12.49k   418.57    13.46k    74.75%
+  1495781 requests in 30.10s, 263.90MB read
+Requests/sec:  49692.82
+Transfer/sec:      8.77MB
 ```

@@ -9,6 +9,11 @@ class TestConverter(unittest.TestCase):
         self.assertEqual(res['currency'], 'DKK')
         self.assertEqual(res['amount'], 65.73)
 
+    def test_computer_error(self):
+        comp = converter.Computer(('USD', 10.0), 'CHF', {'USD': 1.1352, 'DKK': 7.4618})
+        with self.assertRaises(converter.Computer.CurrencyError):
+            comp()
+
     def test_computer_same(self):
         comp = converter.Computer(('USD', 10.0), 'USD', {})
         res = comp()

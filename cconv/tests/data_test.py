@@ -9,7 +9,7 @@ class TestData(unittest.TestCase):
         self.assertIsInstance(tree, ElementTree.ElementTree)
 
     def test_parser(self):
-        tree = data.Fetcher('cconv/tests/stubs.xml')()
+        tree = ElementTree.parse('cconv/tests/stubs.xml')
         parser = data.Parser(tree)
         nodes = parser()
         self.assertIn('2018-11-26', nodes)

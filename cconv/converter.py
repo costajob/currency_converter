@@ -14,12 +14,17 @@ class Computer:
     {'amount': 9.97, 'currency': 'CHF'}
     """
 
+    class CurrencyError(KeyError):
+        """
+        This error is raised when an invalid currency is used on rates conversion.
+        """
+
     DEFAULT = 'EUR'
 
     def __init__(self, money, dest, rates):
         self.src, self.amount =  money
-        self.rates = rates
         self.dest = str(dest).upper()
+        self.rates = rates
 
     @property
     def ratio(self):
@@ -34,7 +39,7 @@ class Computer:
                 return self.rates[self.src] / self.rates[self.dest]
         except KeyError as e:
             logger.error(e)
-            raise KeyError(f'unavailable currency, use one of these: {self.DEFAULT}, {", ".join(self.rates.keys())}')
+            raise self.CurrencyError(f'unavailable currency, use one of these: {self.DEFAULT}, {", ".join(self.rates.keys())}')
 
     def __call__(self):
         conversion = self.amount / self.ratio

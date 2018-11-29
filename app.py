@@ -22,7 +22,7 @@ def convert(environ, start_response):
         money = currency.Money(src, amt)
         comp = converter.Computer(money, dest, rates)
         res = dumps(comp()).encode()
-    except KeyError as e:
+    except (KeyError, converter.Computer.CurrencyError) as e:
         logger.error(e)
         res = str(e).encode()
     response_headers = [('Content-type', 'text/json'), ('Content-Length', str(len(res)))]
@@ -36,7 +36,7 @@ def _query(environ):
     src = query.get('src_currency', ['EUR'])[0]
     dest = query.get('dest_currency', ['USD'])[0]
     ref = query.get('reference_date', [''])[0]
-    return [escape(q) for q in (amt, src, dest, ref)]
+    return (escape(q) for q in (amt, src, dest, ref))
 
 
 def _rates(ref):
