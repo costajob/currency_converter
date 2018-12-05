@@ -28,12 +28,13 @@ class Converter:
     def __init__(self, env, res):
         self.env = env
         self.res = res
+        self.status = '200 OK' 
         self.body = self._body()
         self.headers = self._headers()
 
     def __iter__(self):
         if self._matches():
-            self.res('200 OK', self.headers)
+            self.res(self.status, self.headers)
             yield self.body
 
     def _body(self):
@@ -45,8 +46,9 @@ class Converter:
             comp = converter.Computer(money, dest, rates)
             return dumps(comp()).encode()
         except (self.RefDateError, converter.Computer.CurrencyError) as e:
+            self.status = '422 Unprocessable Entity'
             logger.error(e)
-            return str(e).encode()
+            return dumps(self._error(e)).encode()
     
     def _headers(self):
         return [('Content-type', 'text/json'), ('Content-Length', str(len(self.body)))]
@@ -68,3 +70,7 @@ class Converter:
         except KeyError as e:
             logger.error(e)
             raise self.RefDateError(f'invalid reference date, use one of these: {", ".join(self.DATES)}')
+
+    def _error(self, e):
+        msg, data = str(e).split(': ')
+        return {msg[1:]: data[:-1]}
