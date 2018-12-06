@@ -82,13 +82,13 @@ docker run -d -p 8888:8888 currency_converter
 ```
 
 ## API
-The library exposes a single HTTP API at `0.0.0.0:8888/convert` (or at the port you bound at server start). 
+The library exposes a single HTTP API at `0.0.0.0:8888/convert` (or at the port you bound at server start) responding with `JSON` body. 
 
 ### Parameters
 The query parameters described by the objectives have the following defaults to let the API works anyway:
-* amount: 9.99
-* src_currency: EUR
-* dest_currency: USD
+* amount: `9.99`
+* src_currency: `EUR`
+* dest_currency: `USD`
 * reference_date: the most recent date specified on the XML document
 
 ## Start Server
@@ -116,13 +116,13 @@ Some basic errors management is done via exceptions handling.
 
 ### Invalid Date
 http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=USD&reference_date=2018-11-31
-```
+```json
 {"invalid reference date, use one of these": "2018-12-03, 2018-11-30, 2018-11-29, 2018-11-28, 2018-11-27, 2018-11-26, 2018-11-23, 2018-11-22, 2018-11-21, 2018-11-20, 2018-11-19, 2018-11-16, 2018-11-15, 2018-11-14, 2018-11-13, 2018-11-12, 2018-11-09, 2018-11-08, 2018-11-07, 2018-11-06, 2018-11-05, 2018-11-02, 2018-11-01, 2018-10-31, 2018-10-30, 2018-10-29, 2018-10-26, 2018-10-25, 2018-10-24, 2018-10-23, 2018-10-22, 2018-10-19, 2018-10-18, 2018-10-17, 2018-10-16, 2018-10-15, 2018-10-12, 2018-10-11, 2018-10-10, 2018-10-09, 2018-10-08, 2018-10-05, 2018-10-04, 2018-10-03, 2018-10-02, 2018-10-01, 2018-09-28, 2018-09-27, 2018-09-26, 2018-09-25, 2018-09-24, 2018-09-21, 2018-09-20, 2018-09-19, 2018-09-18, 2018-09-17, 2018-09-14, 2018-09-13, 2018-09-12, 2018-09-11, 2018-09-10, 2018-09-07, 2018-09-06, 2018-09-05"}
 ```
 
 ### Invalid Currency
 http://127.0.0.1:8888/convert?amount=99.99&src_currency=EUR&dest_currency=XXX
-```
+```json
 {"invalid currency, use one of these": "EUR, USD, JPY, BGN, CZK, DKK, GBP, HUF, PLN, RON, SEK, CHF, ISK, NOK, HRK, RUB, TRY, AUD, BRL, CAD, CNY, HKD, IDR, ILS, INR, KRW, MXN, MYR, NZD, PHP, SGD, THB, ZAR"}
 ```
 
