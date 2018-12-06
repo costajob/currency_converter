@@ -24,7 +24,7 @@
 * [Performance](#performance)
 
 # Scope
-This is the implementation of the python code kata `currency converter`. For further instructions please check the `OBJECTIVES.md` file.
+This is the implementation of the python code kata `currency converter`. For further instructions please check the [objectives file](https://github.com/costajob/currency_converter/blob/master/OBJECTIVES.md).
 
 # Requirements
 
