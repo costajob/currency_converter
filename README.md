@@ -133,9 +133,9 @@ wrk -t 4 -c 100 -d30s --timeout 2000 http://127.0.0.1:8888/convert
 Running 30s test @ http://127.0.0.1:8888/convert
   4 threads and 100 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     2.01ms  614.97us   8.11ms   75.41%
-    Req/Sec    12.49k   418.57    13.46k    74.75%
-  1495781 requests in 30.10s, 263.90MB read
-Requests/sec:  49692.82
-Transfer/sec:      8.77MB
+    Latency     2.09ms  549.62us   7.70ms   80.02%
+    Req/Sec    12.04k   562.21    16.12k    70.07%
+  1440483 requests in 30.10s, 254.14MB read
+Requests/sec:  47854.54
+Transfer/sec:      8.44MB
 ```
