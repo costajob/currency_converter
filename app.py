@@ -41,7 +41,7 @@ class Converter:
         try:
             amt, src, dest, ref = self._params()
             ref = ref or self.DATES[0]
-            rates = self.CACHE.fetch(ref, self._rates)
+            rates = self.CACHE.get(ref, self._rates)
             money = currency.Money(src, amt)
             comp = converter.Computer(money, dest, rates)
             return dumps(comp()).encode()

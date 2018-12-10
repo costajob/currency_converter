@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from os import path
 from urllib.parse import urlparse
 from urllib.request import urlopen
@@ -90,13 +91,13 @@ class Cache:
     ========
     >>> callback = lambda key: {key: {'USD': '1.1363', 'ZAR': '15.7322'}}
     >>> cache = Cache()
-    >>> cache.fetch('2018-10-29', callback)
+    >>> cache.get('2018-10-29', callback)
     {'2018-10-29': {'USD': '1.1363', 'ZAR': '15.7322'}}
     """
 
     def __init__(self, capacity=1000):
         self.capacity = int(capacity)
-        self.store = {}
+        self.store = OrderedDict()
 
     def __len__(self):
         return len(self.store)
@@ -107,7 +108,7 @@ class Cache:
     def __getitem__(self, key):
         return self.store[key]
     
-    def fetch(self, key, callback):
+    def get(self, key, callback):
         if key in self.store:
             return self.store[key]
         self._overflow()
@@ -117,6 +118,4 @@ class Cache:
 
     def _overflow(self):
         if len(self) == self.capacity:
-            for key in self.store:
-                self.store.pop(key)
-                break
+            self.store.popitem(False)
